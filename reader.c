@@ -1,7 +1,9 @@
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/types.h>
 #include "jit-reader.h"
 
 GDB_DECLARE_GPL_COMPATIBLE_READER;

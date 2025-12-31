@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <assert.h>   /* for assert */
 #include <stddef.h>   /* for NULL */
 #include <string.h>   /* for memcpy */
@@ -77,12 +78,15 @@ void register_with_perf(const char *code_name, void *code_addr, size_t code_size
 void register_with_gdb(void *code_addr, size_t code_size) {
   // The object is the perf map filename
   pid_t pid = getpid();
-  char filename[256];
-  int filename_len = snprintf(filename, sizeof(filename), "/tmp/perf-%d.map", pid);
-
+  // +1 for NUL; snprintf writes it but does not include it in the count
+  int filename_len = snprintf(NULL, 0, "/tmp/perf-%d.map", pid) + 1;
+  char *filename = malloc(filename_len);
+  assert(filename != NULL && "malloc failed");
+  snprintf(filename, filename_len, "/tmp/perf-%d.map", pid);
   struct jit_code_entry *entry = malloc(sizeof *entry);
   entry->symfile_addr = filename;
-  entry->symfile_size = filename_len + 1; // +1 for NUL
+  // include NUL; we are treating it as a blob of memory, not a C string
+  entry->symfile_size = filename_len;
   entry->prev_entry = NULL;
   // This is where you would lock mutex if multithreaded
   entry->next_entry = __jit_debug_descriptor.first_entry;
