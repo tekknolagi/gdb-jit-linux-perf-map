@@ -42,7 +42,12 @@ void __attribute__((noinline)) __jit_debug_register_code() {
 
 /* Make sure to specify the version statically, because the
    debugger may check the version before we can set it.  */
-struct jit_descriptor __jit_debug_descriptor = { 1, 0, 0, 0 };
+struct jit_descriptor __jit_debug_descriptor = {
+  .version = 1,
+  .action_flag = JIT_NOACTION,
+  .first_entry = NULL,
+  .relevant_entry = NULL,
+};
 
 // END copied from GDB docs
 
@@ -79,6 +84,7 @@ void register_with_gdb(void *code_addr, size_t code_size) {
   entry->symfile_addr = filename;
   entry->symfile_size = filename_len + 1; // +1 for NUL
   entry->prev_entry = NULL;
+  // This is where you would lock mutex if multithreaded
   entry->next_entry = __jit_debug_descriptor.first_entry;
   if (__jit_debug_descriptor.first_entry) {
     __jit_debug_descriptor.first_entry->prev_entry = entry;
@@ -87,6 +93,8 @@ void register_with_gdb(void *code_addr, size_t code_size) {
   __jit_debug_descriptor.relevant_entry = entry;
   __jit_debug_descriptor.action_flag = JIT_REGISTER_FN;
   __jit_debug_register_code();
+  __jit_debug_descriptor.action_flag = JIT_NOACTION;
+  // This is where you would unlock mutex if multithreaded
 }
 
 int main() {
