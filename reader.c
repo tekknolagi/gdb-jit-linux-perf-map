@@ -40,10 +40,19 @@ enum gdb_status read_debug_info(struct gdb_reader_funcs *self,
     }
     uintptr_t addr = 0;
     size_t size = 0;
-    // TODO(max): Do something less gross for the name buffer
+    int name_start_offset = 0;
+    if (sscanf(line, "%lx %zx %n", &addr, &size, &name_start_offset) != 2) {
+      // Ill-formed line
+      continue;
+    }
+    // Don't copy the newline if present
+    size_t name_len = line[nread - 1] == '\n'
+                      ? nread - name_start_offset - 1
+                      : nread - name_start_offset;
     // TODO(max): Stop leaking the name buffers
-    char *name = malloc(1024);
-    if (sscanf(line, "%lx %zx %1023s", &addr, &size, name) != 3) {
+    char *name = strndup(line + name_start_offset, name_len);
+    if (name == NULL) {
+      // Out of memory
       continue;
     }
     // It's hard to tell, but I think GDB expects the caller to own the string
