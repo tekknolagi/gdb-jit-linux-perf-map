@@ -46,6 +46,8 @@ enum gdb_status read_debug_info(struct gdb_reader_funcs *self,
     }
     // It's hard to tell, but I think GDB expects the caller to own the string
     // name and GDB takes a borrowed reference to it
+    // Although buxn-jit seems to use stack-allocated buffers and it works
+    // fine? So it's unclear.
     cb->block_open(cb, symtab, /*parent=*/NULL, addr, addr+size, name);
   }
   fclose(f);
