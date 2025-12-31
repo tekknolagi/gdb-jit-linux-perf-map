@@ -51,7 +51,7 @@ enum gdb_status read_debug_info(struct gdb_reader_funcs *self,
   fclose(f);
   cb->symtab_close(cb, symtab);
   cb->object_close(cb, obj);
-  return GDB_FAIL;
+  return GDB_SUCCESS;
 }
 
 enum gdb_status unwind_frame(struct gdb_reader_funcs *self,
