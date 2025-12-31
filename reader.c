@@ -60,8 +60,12 @@ enum gdb_status unwind_frame(struct gdb_reader_funcs *self,
   return GDB_SUCCESS;
 }
 
-struct gdb_frame_id get_frame_id(struct gdb_reader_funcs* self, struct gdb_unwind_callbacks* cbs) {
-  // TODO(max): Return something meaningful
+struct gdb_frame_id get_frame_id(struct gdb_reader_funcs* self,
+                                 struct gdb_unwind_callbacks* cb) {
+  // TODO(max): Use cb to read DWARF_REG_PC and DWARF_REG_SP from the current
+  // frame. GDB docs suggest setting the CODE_ADDRESS to the first PC value in
+  // the function. We could do this by building an interval list from the perf
+  // map file and storing that on cb->priv_data.
   struct gdb_frame_id frame = {0, 0};
   return frame;
 }
