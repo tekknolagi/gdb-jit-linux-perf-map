@@ -52,6 +52,7 @@ enum gdb_status read_debug_info(struct gdb_reader_funcs *self,
     // fine? So it's unclear.
     cb->block_open(cb, symtab, /*parent=*/NULL, addr, addr+size, name);
   }
+  free(line);
   fclose(f);
   cb->symtab_close(cb, symtab);
   cb->object_close(cb, obj);
