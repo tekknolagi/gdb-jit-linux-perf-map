@@ -62,7 +62,7 @@ enum gdb_status unwind_frame(struct gdb_reader_funcs *self,
 
 struct gdb_frame_id get_frame_id(struct gdb_reader_funcs* self, struct gdb_unwind_callbacks* cbs) {
   // TODO(max): Return something meaningful
-  struct gdb_frame_id frame = {0x1234000, 0};
+  struct gdb_frame_id frame = {0, 0};
   return frame;
 }
 
