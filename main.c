@@ -8,18 +8,7 @@
 #include <sys/types.h> /* for pid_t */
 #include <unistd.h>    /* for getpid */
 
-const unsigned char program[] = {
-    // int3
-    0xcc,
-    // mov eax, 42 (0x2a)
-    0x48, 0xc7, 0xc0, 0x2a, 0x00, 0x00, 0x00,
-    // ret
-    0xc3,
-};
-
-const int kProgramSize = sizeof program;
-
-typedef int (*JitFunction)();
+// BEGIN copied from GDB docs
 
 typedef enum
 {
@@ -54,6 +43,21 @@ void __attribute__((noinline)) __jit_debug_register_code() {
 /* Make sure to specify the version statically, because the
    debugger may check the version before we can set it.  */
 struct jit_descriptor __jit_debug_descriptor = { 1, 0, 0, 0 };
+
+// END copied from GDB docs
+
+const unsigned char program[] = {
+    // int3
+    0xcc,
+    // mov eax, 42 (0x2a)
+    0x48, 0xc7, 0xc0, 0x2a, 0x00, 0x00, 0x00,
+    // ret
+    0xc3,
+};
+
+const int kProgramSize = sizeof program;
+
+typedef int (*JitFunction)();
 
 void register_with_perf(const char *code_name, void *code_addr, size_t code_size) {
   pid_t pid = getpid();
