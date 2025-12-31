@@ -40,7 +40,7 @@ enum gdb_status read_debug_info(struct gdb_reader_funcs *self,
     size_t size = 0;
     // TODO(max): Do something less gross for the name buffer
     // TODO(max): Stop leaking the name buffers
-    const char *name = malloc(1024);
+    char *name = malloc(1024);
     if (sscanf(line, "%lx %zx %1023s", &addr, &size, name) != 3) {
       continue;
     }
