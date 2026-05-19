@@ -1,3 +1,7 @@
+Run GDB, load the reader (make sure to use the full path or it won't load),
+run, and see the name in the backtrace.
+
+```
 cedar% make
 cc -shared -o libreader.so reader.c
 cc -ggdb -o main main.c
@@ -14,3 +18,7 @@ JITed symbol file is not an object file, ignoring it.
 Program received signal SIGTRAP, Trace/breakpoint trap.
 0x00007ffff7ffa001 in my_jit_function ()
 (gdb) # :)
+```
+
+Unfortunately if you run `disassemble my_jit_function` it doesn't recognize the
+function for some reason.
